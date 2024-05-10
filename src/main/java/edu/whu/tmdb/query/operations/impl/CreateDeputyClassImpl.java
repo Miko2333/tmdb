@@ -144,15 +144,17 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
 
         int count = selectResult.getAttrname().length;
         List<String> columns = new ArrayList<String>(); // attribute columns
-        for(String className : selectResult.getClassName()){
-            columns.add(className);
+        for(String attrName : selectResult.getAttrname()){
+            columns.add(attrName);
         }
         HashSet<Integer> originClass = getOriginClass(selectResult); // origin class id
         for(Tuple tuple : selectResult.getTpl().tuplelist){
             InsertImpl insertImplInst = new InsertImpl();
+            int originTupleId = tuple.tupleId;
             int deputyTupleId = insertImplInst.execute(deputyId, columns, tuple);
-            for(Integer classID : originClass){
-                MemConnect.getBiPointerTableList().add(new BiPointerTableItem(classID, tuple.tupleId, deputyId, deputyTupleId));
+            for(Integer classIndex : originClass){
+                String className = selectResult.getClassName()[classIndex];
+                MemConnect.getBiPointerTableList().add(new BiPointerTableItem(memConnect.getClassId(className), originTupleId, deputyId, deputyTupleId));
             }
         }
     }

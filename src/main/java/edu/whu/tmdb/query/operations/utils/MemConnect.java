@@ -190,9 +190,10 @@ public class MemConnect {
         for(ClassTableItem item : getClassTableList()){
             if(item.classid == classId){
                 if(used.contains(item.attrid)){
-                    res++;
+                    continue;
                 }
-                else used.add(item.attrid);
+                res++;
+                used.add(item.attrid);
             }
         }
         if(res == 0){

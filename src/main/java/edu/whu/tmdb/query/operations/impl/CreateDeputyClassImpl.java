@@ -1,6 +1,7 @@
 package edu.whu.tmdb.query.operations.impl;
 
 import edu.whu.tmdb.query.operations.Exception.ErrorList;
+import edu.whu.tmdb.query.operations.Insert;
 import edu.whu.tmdb.storage.memory.MemManager;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
@@ -26,6 +27,8 @@ import edu.whu.tmdb.query.operations.CreateDeputyClass;
 import edu.whu.tmdb.query.operations.Exception.TMDBException;
 import edu.whu.tmdb.query.operations.utils.MemConnect;
 import edu.whu.tmdb.query.operations.utils.SelectResult;
+import edu.whu.tmdb.query.operations.impl.InsertImpl;
+import org.apache.kafka.common.protocol.types.Field;
 
 
 public class CreateDeputyClassImpl implements CreateDeputyClass {
@@ -76,7 +79,31 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
             // 2.新建switchingTableItem
             // 使用MemConnect.getSwitchingTableList().add()
 
-        return -1;
+        // FIXME
+        // 未添加代理规则
+        // 不同类同名属性创建代理时，需要在属性名中增加类名
+
+        MemConnect.getClassTable().maxid++;
+        int deputyId = MemConnect.getClassTable().maxid;
+        int count = selectResult.getAttrname().length;
+
+        for(int i = 0; i < count; i++){
+            String attrName = selectResult.getAttrname()[i];
+            String attrType = selectResult.getType()[i];
+            String alias = selectResult.getAlias()[i];
+            MemConnect.getClassTableList().add(new ClassTableItem(deputyClassName, deputyId, count, i, attrName, attrType, "dep", alias));
+        }
+
+        for(int i = 0; i < count; i++){
+            String oriName = selectResult.getClassName()[i];
+            String attrName = selectResult.getAttrname()[i];
+            int oriId = memConnect.getClassId(oriName);
+            int oriAttrId = memConnect.getAttrid(oriId, attrName);
+            MemConnect.getSwitchingTableList().add(new SwitchingTableItem(oriId, oriAttrId, attrName, deputyId, i, attrName, Integer.toString(deputyRule)));
+        }
+
+        return deputyId;
+        // return -1;
     }
 
     /**
@@ -88,6 +115,18 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
     public void createDeputyTableItem(String[] classNames, int deputyType, int deputyId) throws TMDBException {
         // TODO-task3
         // 使用MemConnect.getDeputyTableList().add()
+
+        // FIXME
+        // 未添加代理规则
+        HashSet<String> originClass = new HashSet<String>();
+        for (String className : classNames) {
+            if(originClass.contains(className)){
+                continue;
+            }
+            originClass.add(className);
+            int originId = memConnect.getClassId(className);
+            MemConnect.getDeputyTableList().add(new DeputyTableItem(originId, deputyId, new String[0]));
+        }
     }
 
     /**
@@ -102,6 +141,20 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
         // 可调用getOriginClass(selectResult);
 
         // 使用MemConnect.getBiPointerTableList().add()插入BiPointerTable
+
+        int count = selectResult.getAttrname().length;
+        List<String> columns = new ArrayList<String>(); // attribute columns
+        for(String className : selectResult.getClassName()){
+            columns.add(className);
+        }
+        HashSet<Integer> originClass = getOriginClass(selectResult); // origin class id
+        for(Tuple tuple : selectResult.getTpl().tuplelist){
+            InsertImpl insertImplInst = new InsertImpl();
+            int deputyTupleId = insertImplInst.execute(deputyId, columns, tuple);
+            for(Integer classID : originClass){
+                MemConnect.getBiPointerTableList().add(new BiPointerTableItem(classID, tuple.tupleId, deputyId, deputyTupleId));
+            }
+        }
     }
 
     /**

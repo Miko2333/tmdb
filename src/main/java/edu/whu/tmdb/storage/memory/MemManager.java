@@ -517,6 +517,12 @@ public class MemManager {
             // 存deputyattrid
             writeAccess.write(Constant.INT_TO_BYTES(item.deputyAttrId));
             // writeAccess.write(item.deputy.getBytes());
+            // 存oriAttr，先存储长度，再存储数据
+            writeAccess.write(Constant.INT_TO_BYTES(item.oriAttr.length()));
+            writeAccess.write(item.oriAttr.getBytes());
+            // 存deputyAttr，先存储长度，再存储数据
+            writeAccess.write(Constant.INT_TO_BYTES(item.deputyAttr.length()));
+            writeAccess.write(item.deputyAttr.getBytes());
             // 存rule，先存储长度，再存储数据
             writeAccess.write(Constant.INT_TO_BYTES(item.rule.length()));
             writeAccess.write(item.rule.getBytes());
@@ -552,10 +558,26 @@ public class MemManager {
             item.deputyAttrId = raf.readInt();
             cur += Integer.BYTES;
 
+            // 读oriAttr
+            int bufferLength = raf.readInt();
+            cur += Integer.BYTES;
+            byte[] buffer = new byte[bufferLength];
+            raf.read(buffer);
+            cur += bufferLength;
+            item.oriAttr = new String(buffer);
+
+            // 读deputyAttr
+            bufferLength = raf.readInt();
+            cur += Integer.BYTES;
+            buffer = new byte[bufferLength];
+            raf.read(buffer);
+            cur += bufferLength;
+            item.deputyAttr = new String(buffer);
+
             // 读rule
             int ruleLength = raf.readInt();
             cur += Integer.BYTES;
-            byte[] buffer = new byte[ruleLength];
+            buffer = new byte[ruleLength];
             raf.read(buffer);
             cur += ruleLength;
             item.rule = new String(buffer);

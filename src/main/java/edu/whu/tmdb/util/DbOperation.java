@@ -2,11 +2,9 @@ package edu.whu.tmdb.util;
 
 import edu.whu.tmdb.query.operations.utils.MemConnect;
 import edu.whu.tmdb.query.operations.utils.SelectResult;
-import edu.whu.tmdb.storage.memory.SystemTable.BiPointerTableItem;
-import edu.whu.tmdb.storage.memory.SystemTable.ClassTableItem;
-import edu.whu.tmdb.storage.memory.SystemTable.DeputyTableItem;
-import edu.whu.tmdb.storage.memory.SystemTable.SwitchingTableItem;
+import edu.whu.tmdb.storage.memory.SystemTable.*;
 import edu.whu.tmdb.storage.memory.Tuple;
+import org.apache.kafka.common.protocol.types.Field;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -78,17 +76,79 @@ public class DbOperation {
 
     public static void showBiPointerTable() {
         // TODO-task2
+        StringBuilder tableHeader = new StringBuilder("|");
+        tableHeader.append(String.format("%-20s", "Class Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Object Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Deputy Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Deputy Object Id")).append("|");
+        System.out.println(tableHeader);
+
+        for(BiPointerTableItem item : MemConnect.getBiPointerTableList()){
+            StringBuilder res = new StringBuilder("|");
+            res.append(String.format("%-20s", item.classid)).append("|");
+            res.append(String.format("%-20s", item.objectid)).append("|");
+            res.append(String.format("%-20s", item.deputyid)).append("|");
+            res.append(String.format("%-20s", item.deputyobjectid)).append("|");
+            System.out.println(res);
+        }
     }
 
     public static void showClassTable() {
         // TODO-task2
+        StringBuilder tableHeader = new StringBuilder("|");
+        tableHeader.append(String.format("%-20s", "Class Name")).append("|");
+        tableHeader.append(String.format("%-20s", "Class Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Attribute Name")).append("|");
+        tableHeader.append(String.format("%-20s", "Attribute Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Attribute Type")).append("|");
+        System.out.println(tableHeader);
+
+        for(ClassTableItem item : MemConnect.getClassTableList()){
+            StringBuilder res = new StringBuilder("|");
+            res.append(String.format("%-20s", item.classname)).append("|");
+            res.append(String.format("%-20s", item.classid)).append("|");
+            res.append(String.format("%-20s", item.attrname)).append("|");
+            res.append(String.format("%-20s", item.attrid)).append("|");
+            res.append(String.format("%-20s", item.attrtype)).append("|");
+            System.out.println(res);
+        }
     }
 
     public static void showDeputyTable() {
         // TODO-task2
+        StringBuilder tableHeader = new StringBuilder("|");
+        tableHeader.append(String.format("%-20s", "Origin Class Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Deputy Class Id")).append("|");
+        System.out.println(tableHeader);
+
+        for(DeputyTableItem item : MemConnect.getDeputyTableList()){
+            StringBuilder res = new StringBuilder("|");
+            res.append(String.format("%-20s", item.originid)).append("|");
+            res.append(String.format("%-20s", item.deputyid)).append("|");
+            System.out.println(res);
+        }
     }
 
     public static void showSwitchingTable() {
         // TODO-task2
+        StringBuilder tableHeader = new StringBuilder("|");
+        tableHeader.append(String.format("%-20s", "Origin Class Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Origin Attribute Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Origin Attribute Name")).append("|");
+        tableHeader.append(String.format("%-20s", "Deputy Class Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Deputy Attribute Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Deputy Attribute Name")).append("|");
+        System.out.println(tableHeader);
+
+        for(SwitchingTableItem item : MemConnect.getSwitchingTableList()){
+            StringBuilder res = new StringBuilder("|");
+            res.append(String.format("%-20s", item.oriId)).append("|");
+            res.append(String.format("%-20s", item.oriAttrid)).append("|");
+            res.append(String.format("%-20s", item.oriAttr)).append("|");
+            res.append(String.format("%-20s", item.deputyId)).append("|");
+            res.append(String.format("%-20s", item.deputyAttrId)).append("|");
+            res.append(String.format("%-20s", item.deputyAttr)).append("|");
+            System.out.println(res);
+        }
     }
 }

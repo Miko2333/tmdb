@@ -150,10 +150,11 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
         HashSet<Integer> originClass = getOriginClass(selectResult); // origin class id
         for(Tuple tuple : selectResult.getTpl().tuplelist){
             InsertImpl insertImplInst = new InsertImpl();
+            int originTupleId = tuple.tupleId;
             int deputyTupleId = insertImplInst.execute(deputyId, columns, tuple);
             for(Integer classIndex : originClass){
                 String className = selectResult.getClassName()[classIndex];
-                MemConnect.getBiPointerTableList().add(new BiPointerTableItem(memConnect.getClassId(className), tuple.tupleId, deputyId, deputyTupleId));
+                MemConnect.getBiPointerTableList().add(new BiPointerTableItem(memConnect.getClassId(className), originTupleId, deputyId, deputyTupleId));
             }
         }
     }

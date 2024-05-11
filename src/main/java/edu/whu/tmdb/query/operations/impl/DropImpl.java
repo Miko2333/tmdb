@@ -48,6 +48,10 @@ public class DropImpl implements Drop {
 
         // 6.递归删除代理类相关
         // TODO-task4
+
+        for(int deputyId : deputyClassIdList){
+            drop(deputyId);
+        }
     }
 
     /**
@@ -56,6 +60,8 @@ public class DropImpl implements Drop {
      */
     private void dropClassTable(int classId) {
         // TODO-task4
+
+        MemConnect.getClassTableList().removeIf(item -> item.classid == classId);
     }
 
     /**
@@ -65,6 +71,13 @@ public class DropImpl implements Drop {
      */
     private void dropDeputyClassTable(int classId, ArrayList<Integer> deputyClassIdList) {
         // TODO-task4
+
+        for(DeputyTableItem item : MemConnect.getDeputyTableList()){
+            if(item.originid == classId){
+                deputyClassIdList.add(item.deputyid);
+            }
+        }
+        MemConnect.getDeputyTableList().removeIf(item -> item.originid == classId);
     }
 
     /**
@@ -73,6 +86,8 @@ public class DropImpl implements Drop {
      */
     private void dropBiPointerTable(int classId) {
         // TODO-task4
+
+        MemConnect.getBiPointerTableList().removeIf(item -> item.classid == classId);
     }
 
     /**
@@ -81,6 +96,8 @@ public class DropImpl implements Drop {
      */
     private void dropSwitchingTable(int classId) {
         // TODO-task4
+
+        MemConnect.getSwitchingTableList().removeIf(item -> item.oriId == classId);
     }
 
     /**
@@ -90,6 +107,8 @@ public class DropImpl implements Drop {
     private void dropObjectTable(int classId) {
         // TODO-task4
         // 使用MemConnect.getObjectTableList().remove();
+
+        MemConnect.getObjectTableList().removeIf(item -> item.classid == classId);
     }
 
 }

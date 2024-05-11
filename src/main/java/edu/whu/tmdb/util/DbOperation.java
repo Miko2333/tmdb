@@ -151,4 +151,19 @@ public class DbOperation {
             System.out.println(res);
         }
     }
+
+    public static void showObjectTable() {
+        // TODO-task2
+        StringBuilder tableHeader = new StringBuilder("|");
+        tableHeader.append(String.format("%-20s", "Class Id")).append("|");
+        tableHeader.append(String.format("%-20s", "Tuple Id")).append("|");
+        System.out.println(tableHeader);
+
+        for(ObjectTableItem item : MemConnect.getObjectTableList()){
+            StringBuilder res = new StringBuilder("|");
+            res.append(String.format("%-20s", item.classid)).append("|");
+            res.append(String.format("%-20s", item.tupleid)).append("|");
+            System.out.println(res);
+        }
+    }
 }

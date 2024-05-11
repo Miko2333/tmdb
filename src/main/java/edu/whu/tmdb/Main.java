@@ -37,6 +37,8 @@ public class Main {
                 DbOperation.showDeputyTable();
             } else if ("show SwitchingTable".equalsIgnoreCase(sqlCommand)) {
                 DbOperation.showSwitchingTable();
+            } else if ("show ObjectTable".equalsIgnoreCase(sqlCommand)) {
+                DbOperation.showObjectTable();
             } else if (!sqlCommand.isEmpty()) {
                 SelectResult result = execute(sqlCommand);
                 if (result != null) {

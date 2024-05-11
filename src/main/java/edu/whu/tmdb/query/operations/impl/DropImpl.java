@@ -78,6 +78,7 @@ public class DropImpl implements Drop {
             }
         }
         MemConnect.getDeputyTableList().removeIf(item -> item.originid == classId);
+        MemConnect.getDeputyTableList().removeIf(item -> item.deputyid == classId);
     }
 
     /**
@@ -88,6 +89,7 @@ public class DropImpl implements Drop {
         // TODO-task4
 
         MemConnect.getBiPointerTableList().removeIf(item -> item.classid == classId);
+        MemConnect.getBiPointerTableList().removeIf(item -> item.deputyid == classId);
     }
 
     /**
@@ -98,6 +100,7 @@ public class DropImpl implements Drop {
         // TODO-task4
 
         MemConnect.getSwitchingTableList().removeIf(item -> item.oriId == classId);
+        MemConnect.getSwitchingTableList().removeIf(item -> item.deputyId == classId);
     }
 
     /**

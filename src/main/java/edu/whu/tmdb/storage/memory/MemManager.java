@@ -595,6 +595,7 @@ public class MemManager {
         File f = new File(Constant.SYSTEM_TABLE_DIR + "ot");
         FileOperation.createNewFile(f);
         RandomAccessFile raf = new RandomAccessFile(f, "rw");
+        raf.setLength(0);
 
         // 用int记录maxTupleId
         raf.writeInt(this.objectTable.maxTupleId);

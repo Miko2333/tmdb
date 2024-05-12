@@ -24,6 +24,15 @@ public class SelectResult {
         this.type = type;
     }
 
+    public SelectResult(SelectResult old){
+        this.tpl = new TupleList(old.tpl);
+        this.className = old.className.clone();
+        this.attrname = old.attrname.clone();
+        this.alias = old.alias.clone();
+        this.attrid = old.attrid.clone();
+        this.type = old.type.clone();
+    }
+
     /**
      * 初始化表头大小，设置selectResult表项的数量
      * @param size selectResult表项的数量

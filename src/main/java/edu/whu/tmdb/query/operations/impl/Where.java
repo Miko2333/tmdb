@@ -40,8 +40,9 @@ public class Where {
     Formula formula = new Formula();
 
     public SelectResult where(PlainSelect plainSelect, SelectResult selectResult) throws TMDBException, IOException {
-        execute(plainSelect.getWhere(), selectResult);
-        return selectResult;
+//        execute(plainSelect.getWhere(), selectResult);
+//        return selectResult;
+        return execute(plainSelect.getWhere(), selectResult);
     }
 
     /**
@@ -321,12 +322,13 @@ public class Where {
     }
 
     public SelectResult getSelectResultFromSet(SelectResult selectResult, HashSet<Tuple> set){
+        SelectResult trueResult = new SelectResult(selectResult);
         TupleList tupleList = new TupleList();
         for(Tuple tuple : set){
             tupleList.addTuple(tuple);
         }
-        selectResult.setTpl(tupleList);
-        return selectResult;
+        trueResult.setTpl(tupleList);
+        return trueResult;
     }
 
     // 进行类型转换，很多时候需要使用

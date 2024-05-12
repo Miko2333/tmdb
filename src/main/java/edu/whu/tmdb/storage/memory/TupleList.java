@@ -9,6 +9,11 @@ public class TupleList implements Serializable {
 
     public TupleList() {}
 
+    public TupleList(TupleList old){
+        this.tuplelist = new ArrayList<Tuple>(old.tuplelist);
+        this.tuplenum = old.tuplenum;
+    }
+
     public TupleList(int tupleSize, int tupleListSize) {
         for (int i = 0; i < tupleListSize; i++){
             Tuple tuple = new Tuple();

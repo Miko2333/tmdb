@@ -102,7 +102,16 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
 
     private SelectResult limit(int limit,SelectResult selectResult) {
         // TODO-task9
-        return selectResult;
+
+        SelectResult limitResult = new SelectResult(selectResult);
+        limitResult.setTpl(new TupleList());
+        for(int i = 0; i < limit; i++){
+            if(i >= selectResult.getTpl().tuplelist.size()){
+                break;
+            }
+            limitResult.getTpl().addTuple(selectResult.getTpl().tuplelist.get(i));
+        }
+        return limitResult;
     }
 
     private SelectResult groupByElicit(PlainSelect plainSelect, HashMap resultMap, SelectResult selectResult) throws TMDBException {
@@ -345,6 +354,32 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
 
         // 4.剩余属性赋值
 
+        if(selectItem.getAlias() != null){
+            projectResult.getAttrname()[indexInResult] = selectItem.getAlias().getName();
+        }
+        else{
+            projectResult.getAttrname()[indexInResult] = selectItem.getExpression().toString();
+        }
+
+        ArrayList<String> tableColumn = new ArrayList<>();
+        attributeParser(selectItem.getExpression().toString(), tableColumn);
+        ArrayList<Object> dataList = (new Formula()).formulaExecute(selectItem.getExpression(), entireResult);
+        for(int i = 0; i < dataList.size(); i++){
+            resTupleList.tuplelist.get(i).tuple[indexInResult] = dataList.get(i);
+        }
+        String tableName = tableColumn.get(0);
+        String columnName = tableColumn.get(1);
+        int oldIndex = getIndexInEntireResult(entireResult, tableName, columnName);
+        String expType = selectItem.getExpression().getClass().getSimpleName();
+        if(expType.equals("Column")){
+            projectResult.getClassName()[indexInResult] = entireResult.getClassName()[oldIndex];
+        }
+        else{
+            projectResult.getClassName()[indexInResult] = "";
+        }
+        projectResult.getType()[indexInResult] = entireResult.getType()[oldIndex];
+        projectResult.getAlias()[indexInResult] = "";
+        projectResult.getAttrid()[indexInResult] = indexInResult;
     }
 
     /**

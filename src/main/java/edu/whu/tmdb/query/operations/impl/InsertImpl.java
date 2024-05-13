@@ -166,7 +166,7 @@ public class InsertImpl implements Insert {
 
             for (String originColumn : originColumns) {
                 if (switchingTableItem.oriAttr.equals(originColumn)) {
-                    attrNameHashMap.put(originColumn, switchingTableItem.oriAttr);
+                    attrNameHashMap.put(originColumn, switchingTableItem.deputyAttr);
                 }
             }
         }
@@ -201,6 +201,9 @@ public class InsertImpl implements Insert {
         Object[] temp = new Object[attrNameHashMap.size()];
         int i = 0;
         for(String originColumn : originColumns){
+            if(!attrNameHashMap.containsKey(originColumn)){
+                continue;
+            }
             temp[i] = originTuple.tuple[originColumns.indexOf(originColumn)];
             i++;
         }

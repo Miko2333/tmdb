@@ -15,6 +15,7 @@ import net.sf.jsqlparser.statement.Statement;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import edu.whu.tmdb.query.operations.Exception.TMDBException;
 import edu.whu.tmdb.query.operations.Delete;
@@ -23,8 +24,11 @@ import edu.whu.tmdb.query.operations.utils.MemConnect;
 import edu.whu.tmdb.query.operations.utils.SelectResult;
 
 public class DeleteImpl implements Delete {
+    private final MemConnect memConnect;
 
-    public DeleteImpl() {}
+    public DeleteImpl() {
+        this.memConnect = MemConnect.getInstance(MemManager.getInstance());
+    }
 
     @Override
     public void delete(Statement statement) throws JSQLParserException, TMDBException, IOException {
@@ -35,7 +39,7 @@ public class DeleteImpl implements Delete {
         // 1.获取符合where条件的所有元组
         Table table = deleteStmt.getTable();        // 获取需要删除的表名
         Expression where = deleteStmt.getWhere();   // 获取delete中的where表达式
-        String sql = "select * from " + table;;
+        String sql = "select * from " + table;
         if (where != null) {
             sql += " where " + String.valueOf(where) + ";";
         }
@@ -69,6 +73,33 @@ public class DeleteImpl implements Delete {
         //     deputyTupleList.addTuple(tuple);
         // }
         // delete(deputyTupleList);
+
+        if(tupleList.tuplenum == 0){
+            return;
+        }
+
+        HashSet<Integer> tupleIdList = new HashSet<>();
+        for(Tuple tuple : tupleList.tuplelist){
+            tupleIdList.add(tuple.tupleId);
+        }
+        MemConnect.getObjectTableList().removeIf(item -> tupleIdList.contains(item.tupleid));
+
+        HashSet<Integer> deputyTupleIdList = new HashSet<>();
+        for(BiPointerTableItem item : MemConnect.getBiPointerTableList()){
+            if(tupleIdList.contains(item.objectid)){
+                deputyTupleIdList.add(item.deputyobjectid);
+            }
+        }
+        MemConnect.getBiPointerTableList().removeIf(item -> tupleIdList.contains(item.objectid));
+        MemConnect.getBiPointerTableList().removeIf(item -> tupleIdList.contains(item.deputyobjectid));
+
+        TupleList deputyTupleList = new TupleList();
+        for(int deputyTupleId : deputyTupleIdList){
+            Tuple tuple = memConnect.GetTuple(deputyTupleId);
+            deputyTupleList.addTuple(tuple);
+        }
+
+        delete(deputyTupleList);
     }
 
 }

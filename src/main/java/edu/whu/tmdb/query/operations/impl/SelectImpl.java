@@ -354,11 +354,12 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
 
         // 4.剩余属性赋值
 
+        projectResult.getAttrname()[indexInResult] = selectItem.getExpression().toString();
         if(selectItem.getAlias() != null){
-            projectResult.getAttrname()[indexInResult] = selectItem.getAlias().getName();
+            projectResult.getAlias()[indexInResult] = selectItem.getAlias().getName();
         }
         else{
-            projectResult.getAttrname()[indexInResult] = selectItem.getExpression().toString();
+            projectResult.getAlias()[indexInResult] = "";
         }
 
         ArrayList<String> tableColumn = new ArrayList<>();
@@ -378,7 +379,6 @@ public class SelectImpl implements edu.whu.tmdb.query.operations.Select {
             projectResult.getClassName()[indexInResult] = "";
         }
         projectResult.getType()[indexInResult] = entireResult.getType()[oldIndex];
-        projectResult.getAlias()[indexInResult] = "";
         projectResult.getAttrid()[indexInResult] = indexInResult;
     }
 

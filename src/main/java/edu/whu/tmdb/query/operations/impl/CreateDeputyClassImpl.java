@@ -91,15 +91,23 @@ public class CreateDeputyClassImpl implements CreateDeputyClass {
             String attrName = selectResult.getAttrname()[i];
             String attrType = selectResult.getType()[i];
             String alias = selectResult.getAlias()[i];
+            if(!alias.equals("")){
+                attrName = alias;
+            }
             MemConnect.getClassTableList().add(new ClassTableItem(deputyClassName, deputyId, count, i, attrName, attrType, "dep", alias));
         }
 
         for(int i = 0; i < count; i++){
             String oriName = selectResult.getClassName()[i];
             String attrName = selectResult.getAttrname()[i];
+            String deputyAttrName = attrName;
+            String alias = selectResult.getAlias()[i];
+            if(!alias.equals("")){
+                deputyAttrName = alias;
+            }
             int oriId = memConnect.getClassId(oriName);
             int oriAttrId = memConnect.getAttrid(oriId, attrName);
-            MemConnect.getSwitchingTableList().add(new SwitchingTableItem(oriId, oriAttrId, attrName, deputyId, i, attrName, Integer.toString(deputyRule)));
+            MemConnect.getSwitchingTableList().add(new SwitchingTableItem(oriId, oriAttrId, attrName, deputyId, i, deputyAttrName, Integer.toString(deputyRule)));
         }
 
         return deputyId;
